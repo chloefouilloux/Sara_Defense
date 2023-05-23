@@ -1,0 +1,117 @@
+
+#Sara Defense Gift Code
+
+library(tidyverse)
+library(ggplot2)
+library(ggforce)
+library(extrafont)
+library(ggtext)
+
+extrafont::loadfonts()
+
+
+# Apply global theme
+apply_pattern_theme = function(bg_hex, caption_hex){
+  theme(
+    plot.background = element_rect(fill = bg_hex),
+    panel.background = element_rect(fill = bg_hex),
+    panel.grid = element_blank(),
+    plot.caption = element_text(family = "Arial",
+                                size = 6,
+                                color = caption_hex),
+    legend.position = "none",
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+}
+
+
+###########
+num_lines = 100 #because we are humans and we think in 100s
+
+lines = tibble(
+  x = 1:num_lines,
+  xend = x,
+  y = 1,
+  yend = 10)
+
+lines_out = tibble(
+  x = 1:50, #number of people in attendance, lime green ones!
+  xend = x,
+  y = 11,
+  yend = 12)
+
+#note: the x range has to equal the sum of length in and length out
+time_known = tibble(
+  x = 0:32, #blue; this pivots is around the circle
+  xend = x , #* 0.5
+  y = c(seq(1, 10, length.out = 5),
+        seq(10, 1, length.out = 28)), #the evenness between length in and out determines symmetry of the petal
+  yend = 1)
+
+#note: the x range has to equal the sum of length in and length out (+1)
+kind = tibble(
+  x = 30:80, #kind
+  xend = x+ 1.5 ,
+  y = c(seq(1, 10, length.out = 26), 
+        #lenght.out == evenness of spread. 
+        #The more similar, the more symmetric the petal
+        seq(10, 1, length.out = 25)),
+  yend = 1)
+
+#note: the x range has to equal the sum of length in and length out (+1)
+brillant = tibble(
+  x = 50:100, #brilliant
+  xend = x,
+  y = c(seq(1, 13, length.out = 26),
+        seq(13, 1, length.out = 25)), #this break it past confines of the line
+  yend = 1)
+
+ggplot() +
+  geom_segment(data = lines, 
+               aes(x = x, xend = xend,
+                   y = y, yend = yend),
+               color = "white") +
+  geom_segment(data = lines_out, 
+               aes(x = x, xend = xend,
+                   y = y, yend = yend),
+               color = "#D3FC00") +
+  geom_segment(data = time_known, 
+               aes(x = x, xend = xend,
+                   y = y, yend = yend),
+               color = "#5878A7") + 
+  
+  geom_segment(data = kind, 
+               aes(x = x, xend = xend,
+                   y = y, yend = yend),
+               color = "#FF7373") + 
+  geom_segment(data = brillant, 
+               aes(x = x, xend = xend,
+                   y = y, yend = yend),
+               color = "#FF8520") + 
+  annotate( geom = "segment", #average time known, X values are the mean
+            x = 12, xend = 12, y = 1, yend = 11, 
+               colour = "#c8dcf9")+
+ scale_y_continuous(limits = c(-2, 13)) +
+  coord_polar()+
+  theme(
+        plot.caption = element_text(family = "Avenir", 
+                                    colour = "grey", face = "italic"),
+        plot.background = element_rect(fill = "#fdfcf3", colour = "#85b87c", size = 3),
+        plot.margin = unit(c(7, 10, 3, 10), units = "mm"),
+        panel.background = element_rect(fill = "#85b87c", colour = "#85b87c"),
+        legend.background = element_rect(fill = "#fdfcf3"),
+        legend.key = element_blank(),
+        legend.key.width = unit(20, "mm"),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank())
+
+
+
+
+
+
+
